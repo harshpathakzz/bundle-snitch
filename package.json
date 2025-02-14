@@ -30,5 +30,20 @@
     "budgetPercentIncreaseRed": 1,
     "minimumChangeThreshold": 0,
     "showDetails": true
+  },
+  "bundlewatch" : {
+    "baseBranch": "main",
+    "files": [
+      {
+        "path": ".next/static/chunks/*.js",
+        "maxSize": "250kB"
+      }
+    ],
+    "ci": {
+      "trackBranches": ["main"],
+      "repoOwner": "harshpathakzz",
+      "repoName": "bundle-snitch"
+
+    }
   }
 }
