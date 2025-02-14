@@ -39,4 +39,5 @@ jobs:
           CI_REPO_NAME: ${{ github.event.repository.name }}
           CI_COMMIT_SHA: ${{ github.sha }}
           CI_BRANCH: ${{ github.ref_name }}
+          CI_BRANCH_BASE: ${{ github.base_ref }}
         run: pnpm exec bundlewatch
