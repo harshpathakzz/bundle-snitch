@@ -54,10 +54,10 @@ jobs:
         run: pnpm next build
 
       - name: Install nextjs-bundle-analysis
-        run: pnpm nextjs-bundle-analysis
+        run: pnpm add -D nextjs-bundle-analysis
 
       - name: Analyze bundle
-        run: nextjs-bundle-analysis report
+        run: pnpm exec nextjs-bundle-analysis report
 
       - name: Upload bundle
         uses: actions/upload-artifact@v4
@@ -75,7 +75,7 @@ jobs:
 
       - name: Compare with base branch bundle
         if: success() && github.event.number
-        run: ls -laR .next/analyze/base && nextjs-bundle-analysis compare
+        run: ls -laR .next/analyze/base && pnpm exec nextjs-bundle-analysis compare
 
       - name: Get Comment Body
         id: get-comment-body
