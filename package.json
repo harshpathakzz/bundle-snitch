@@ -10,26 +10,29 @@
   },
   "dependencies": {
     "next": "15.1.7",
+    "radix-ui": "^1.1.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "three": "^0.173.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.173.0",
     "bundlewatch": "^0.4.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "typescript": "^5"
   },
   "nextBundleAnalysis": {
-    "budget": 307200,
-    "budgetPercentIncreaseRed": 20,
+    "budget": 102400,
+    "budgetPercentIncreaseRed": 1,
     "minimumChangeThreshold": 0,
     "showDetails": true
   },
-  "bundlewatch" : {
+  "bundlewatch": {
     "baseBranch": "main",
     "files": [
       {
@@ -38,10 +41,11 @@
       }
     ],
     "ci": {
-      "trackBranches": ["main"],
+      "trackBranches": [
+        "main"
+      ],
       "repoOwner": "harshpathakzz",
       "repoName": "bundle-snitch"
-
     }
   }
 }
