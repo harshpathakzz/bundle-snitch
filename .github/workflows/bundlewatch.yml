@@ -1,9 +1,11 @@
 name: BundleWatch
 
 on:
-  pull_request:
-    branches:
-      - main
+    pull_request:
+    push:
+      branches:
+        - main 
+    workflow_dispatch:
 
 jobs:
   bundlewatch:
