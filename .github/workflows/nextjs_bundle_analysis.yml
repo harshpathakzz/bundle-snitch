@@ -54,7 +54,7 @@ jobs:
         run: pnpm next build
 
       - name: Install nextjs-bundle-analysis
-        run: pnpm add -g nextjs-bundle-analysis
+        run: pnpm nextjs-bundle-analysis
 
       - name: Analyze bundle
         run: nextjs-bundle-analysis report
