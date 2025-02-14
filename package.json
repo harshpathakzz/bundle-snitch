@@ -30,6 +30,7 @@
     "showDetails": true
   },
   "bundlewatch" : {
+    "baseBranch": "main",
     "files": [
       {
         "path": ".next/static/chunks/*.js",
@@ -40,7 +41,7 @@
       "trackBranches": ["main"],
       "repoOwner": "harshpathakzz",
       "repoName": "bundle-snitch"
-      
+
     }
   }
 }
