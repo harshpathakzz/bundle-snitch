@@ -1,0 +1,14 @@
+{
+    "files": [
+      {
+        "path": ".next/static/chunks/*.js",
+        "maxSize": "250kB"
+      }
+    ],
+    "ci": {
+      "trackBranches": ["main"],
+      "repoOwner": "harshpathakzz",
+      "repoName": "bundle-snitch"
+    }
+  }
+  
