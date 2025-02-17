@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 name: 'Next.js Bundle Analysis'
 
 on:
@@ -9,12 +12,13 @@ on:
 
 defaults:
   run:
+    # change this if your Next.js app does not live at the root of the repo
     working-directory: ./
 
 permissions:
-  contents: read
-  actions: read
-  pull-requests: write
+  contents: read # for checkout repository
+  actions: read # for fetching base branch bundle stats
+  pull-requests: write # for comments
 
 jobs:
   analyze:
@@ -22,14 +26,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
+      - name: Install Node.js and pnpm
+        uses: pnpm/action-setup@v2
         with:
-          version: 9
+          version: 9 
           run_install: false
 
-      - uses: actions/setup-node@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 20.17.0 # Or your preferred version
+          node-version: 20.17.0
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -47,14 +53,14 @@ jobs:
       - name: Build Next.js app
         run: pnpm next build
 
-      - name: Analyze bundle with details
-        run: npx -p nextjs-bundle-analysis report --details
+      - name: Analyze bundle
+        run: npx -p nextjs-bundle-analysis report
 
-      - name: Upload bundle analysis results
+      - name: Upload bundle
         uses: actions/upload-artifact@v4
         with:
-          name: bundle-analysis-results
-          path: .next/analyze
+          name: bundle
+          path: .next/analyze/__bundle_analysis.json
 
       - name: Download base branch bundle stats
         uses: dawidd6/action-download-artifact@v2
@@ -66,27 +72,15 @@ jobs:
 
       - name: Compare with base branch bundle
         if: success() && github.event.number
-        run: npx -p nextjs-bundle-analysis compare --details # Add --details here as well
+        run: ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
 
-      - name: Generate detailed comment body
-        id: generate-comment
+      - name: Get Comment Body
+        id: get-comment-body
         if: success() && github.event.number
         run: |
           echo "body<<EOF" >> $GITHUB_OUTPUT
-          cat .next/analyze/__bundle_analysis_comment.txt | while read line; do
-            echo "$line" >> $GITHUB_OUTPUT
-          done
-          # Include detailed page analysis in the comment
-          if [[ -f ".next/analyze/__bundle_analysis_details.txt" ]]; then
-            echo "" >> $GITHUB_OUTPUT
-            echo "<details><summary>Detailed Page Analysis</summary>" >> $GITHUB_OUTPUT
-            cat .next/analyze/__bundle_analysis_details.txt | while read line; do
-              echo "$line" >> $GITHUB_OUTPUT
-            done
-            echo "</details>" >> $GITHUB_OUTPUT
-          fi
+          echo "$(cat .next/analyze/__bundle_analysis_comment.txt)" >> $GITHUB_OUTPUT
           echo EOF >> $GITHUB_OUTPUT
-
 
       - name: Find Comment
         uses: peter-evans/find-comment@v2
@@ -94,20 +88,20 @@ jobs:
         id: fc
         with:
           issue-number: ${{ github.event.number }}
-          body-includes: ''
+          body-includes: '<!-- __NEXTJS_BUNDLE -->'
 
       - name: Create Comment
         uses: peter-evans/create-or-update-comment@v2
         if: success() && github.event.number && steps.fc.outputs.comment-id == 0
         with:
           issue-number: ${{ github.event.number }}
-          body: ${{ steps.generate-comment.outputs.body }}
+          body: ${{ steps.get-comment-body.outputs.body }}
 
       - name: Update Comment
         uses: peter-evans/create-or-update-comment@v2
         if: success() && github.event.number && steps.fc.outputs.comment-id != 0
         with:
           issue-number: ${{ github.event.number }}
-          body: ${{ steps.generate-comment.outputs.body }}
+          body: ${{ steps.get-comment-body.outputs.body }}
           comment-id: ${{ steps.fc.outputs.comment-id }}
           edit-mode: replace
